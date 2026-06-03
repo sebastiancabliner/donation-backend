@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Widget</title>
+  <style>
+    body { background: #0f172a; color: white; font-family: sans-serif;
+           display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    button { background: #1d4ed8; color: white; border: none; padding: 14px 28px;
+             border-radius: 10px; font-size: 16px; cursor: pointer; }
+    button:hover { background: #1e40af; }
+  </style>
+</head>
+<body>
+  <button onclick="DonationWidget.open({ site: 'lagrieta' })">
+    💙 Probar Widget
+  </button>
+  <script src="/widget.js"></script>
+</body>
+</html>
