@@ -252,7 +252,7 @@
 
             <div id="paypal-btn-container" class="${isMp ? 'hidden' : ''}"></div>
 
-            <button class="skip-btn" id="dw-skip">Ver mis resultados →</button>
+            ${_state.showResults ? '<button class="skip-btn" id="dw-skip">Ver mis resultados →</button>' : ''}
           </div>
         </div>
       </div>
@@ -267,7 +267,7 @@
             <div class="success-icon">💙</div>
             <div class="success-title">¡MUCHAS GRACIAS!</div>
             <p class="success-sub">Tu donación ayuda a que La Grieta siga siendo gratuita para todos.</p>
-            <button class="cta-btn" id="dw-success-close">Ver mis resultados →</button>
+            ${_state.showResults ? '<button class="cta-btn" id="dw-success-close">Ver mis resultados →</button>' : '<button class="cta-btn" id="dw-success-close">Cerrar →</button>'}
           </div>
         </div>
       </div>
@@ -279,6 +279,7 @@
     site: 'lagrieta',
     currency: 'ARS',
     amount: 6000,
+    showResults: true,
     host: null,
     shadow: null,
     publicConfig: null,
@@ -505,9 +506,10 @@
   // ── Public API ────────────────────────────────────────────────────────────────
   const DonationWidget = {
     async open(config) {
-      _state.site     = config.site || 'lagrieta';
-      _state.currency = 'ARS';
-      _state.amount   = 6000;
+      _state.site        = config.site || 'lagrieta';
+      _state.currency    = 'ARS';
+      _state.amount      = 6000;
+      _state.showResults = config.showResults !== false;
 
       if (_state.host) _state.host.remove();
       _state.host = document.createElement('div');
