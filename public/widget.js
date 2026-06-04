@@ -412,21 +412,9 @@
         locale: 'es-AR',
       });
 
-      const resetMpBtn = () => {
-        const btn = $('#dw-mp-btn');
-        if (btn) {
-          btn.innerHTML = '💙 DONAR CON MERCADO PAGO';
-          btn.disabled = false;
-        }
-      };
-
       mp.checkout({
         preference: { id: preference_id },
         autoOpen: true,
-        callbacks: {
-          onClose: resetMpBtn,
-          onError: resetMpBtn,
-        },
       });
 
       setLoading(mpBtn, false);
@@ -434,6 +422,18 @@
         mpBtn.innerHTML = '⏳ COMPLETÁ EL PAGO EN LA VENTANA';
         mpBtn.disabled = true;
       }
+
+      // When the MP popup closes, the parent window regains focus.
+      // Use that to reset the button back to its original state.
+      const resetMpBtn = () => {
+        const btn = $('#dw-mp-btn');
+        if (btn && btn.disabled) {
+          btn.innerHTML = '💙 DONAR CON MERCADO PAGO';
+          btn.disabled = false;
+        }
+        window.removeEventListener('focus', resetMpBtn);
+      };
+      window.addEventListener('focus', resetMpBtn);
 
     } catch (err) {
       setLoading(mpBtn, false);
