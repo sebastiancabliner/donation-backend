@@ -412,9 +412,21 @@
         locale: 'es-AR',
       });
 
+      const resetMpBtn = () => {
+        const btn = $('#dw-mp-btn');
+        if (btn) {
+          btn.innerHTML = '💙 DONAR CON MERCADO PAGO';
+          btn.disabled = false;
+        }
+      };
+
       mp.checkout({
         preference: { id: preference_id },
         autoOpen: true,
+        callbacks: {
+          onClose: resetMpBtn,
+          onError: resetMpBtn,
+        },
       });
 
       setLoading(mpBtn, false);
