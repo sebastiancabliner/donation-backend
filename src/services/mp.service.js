@@ -21,7 +21,7 @@ async function createPreference({ amount, siteName, accessToken }) {
     },
   });
 
-  return response.id;
+  return { preference_id: response.id, init_point: response.init_point };
 }
 
 module.exports = { createPreference };

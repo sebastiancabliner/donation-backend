@@ -15,12 +15,12 @@ router.post('/', async (req, res) => {
   if (!siteConfig) return res.status(404).json({ error: 'Site no encontrado' });
 
   try {
-    const preferenceId = await createPreference({
+    const { preference_id, init_point } = await createPreference({
       amount: Number(amount),
       siteName: siteConfig.name,
       accessToken: siteConfig.mp_access_token,
     });
-    return res.json({ preference_id: preferenceId });
+    return res.json({ preference_id, init_point });
   } catch (err) {
     console.error('[mp route] Error:', err.message);
     return res.status(500).json({ error: 'Error al crear preferencia de pago' });

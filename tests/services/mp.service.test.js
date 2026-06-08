@@ -1,5 +1,5 @@
 jest.mock('mercadopago', () => {
-  const mockCreate = jest.fn().mockResolvedValue({ id: 'pref_test_abc123' });
+  const mockCreate = jest.fn().mockResolvedValue({ id: 'pref_test_abc123', init_point: 'https://mp.com/checkout?pref_id=pref_test_abc123' });
   return {
     MercadoPagoConfig: jest.fn(),
     Preference: jest.fn().mockImplementation(() => ({ create: mockCreate })),
@@ -10,14 +10,15 @@ jest.mock('mercadopago', () => {
 describe('mp service', () => {
   beforeEach(() => jest.resetModules());
 
-  it('crea una preferencia y devuelve el preference_id', async () => {
+  it('crea una preferencia y devuelve preference_id + init_point', async () => {
     const { createPreference } = require('../../src/services/mp.service');
     const result = await createPreference({
       amount: 6000,
       siteName: 'La Grieta',
       accessToken: 'APP_USR-test-token',
     });
-    expect(result).toBe('pref_test_abc123');
+    expect(result.preference_id).toBe('pref_test_abc123');
+    expect(result.init_point).toContain('pref_test_abc123');
   });
 
   it('lanza error si el SDK falla', async () => {

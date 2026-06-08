@@ -10,7 +10,7 @@ jest.mock('../../src/config/sites', () => ({
 }));
 
 jest.mock('../../src/services/mp.service', () => ({
-  createPreference: jest.fn().mockResolvedValue('pref_test_abc123'),
+  createPreference: jest.fn().mockResolvedValue({ preference_id: 'pref_test_abc123', init_point: 'https://mp.com/checkout?pref_id=pref_test_abc123' }),
 }));
 
 describe('POST /api/v1/donations/mercadopago', () => {

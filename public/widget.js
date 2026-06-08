@@ -404,36 +404,14 @@
       });
 
       if (!res.ok) throw new Error('Error al crear preferencia');
-      const { preference_id } = await res.json();
+      const { init_point } = await res.json();
 
-      await loadScript('https://sdk.mercadopago.com/js/v2');
+      if (!init_point) throw new Error('No se recibió el link de pago');
 
-      const mp = new window.MercadoPago(_state.publicConfig.mp_public_key, {
-        locale: 'es-AR',
-      });
-
-      mp.checkout({
-        preference: { id: preference_id },
-        autoOpen: true,
-      });
-
-      setLoading(mpBtn, false);
-      if (mpBtn) {
-        mpBtn.innerHTML = '⏳ COMPLETÁ EL PAGO EN LA VENTANA';
-        mpBtn.disabled = true;
-      }
-
-      // When the MP popup closes, the parent window regains focus.
-      // Use that to reset the button back to its original state.
-      const resetMpBtn = () => {
-        const btn = $('#dw-mp-btn');
-        if (btn && btn.disabled) {
-          btn.innerHTML = '💙 DONAR CON MERCADO PAGO';
-          btn.disabled = false;
-        }
-        window.removeEventListener('focus', resetMpBtn);
-      };
-      window.addEventListener('focus', resetMpBtn);
+      // Abrir MP en nueva pestaña y cerrar el widget.
+      // No usamos autoOpen (inyecta overlay en el DOM del sitio y queda colgado al cerrar).
+      window.open(init_point, '_blank');
+      DonationWidget.close();
 
     } catch (err) {
       setLoading(mpBtn, false);
