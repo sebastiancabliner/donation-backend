@@ -36,8 +36,9 @@
     .overlay {
       position: fixed; inset: 0; z-index: 99999;
       background: rgba(0,0,0,0.85);
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: flex-start; justify-content: center;
       padding: 16px;
+      overflow-y: auto;
       font-family: 'Inter', sans-serif;
     }
 
@@ -45,10 +46,11 @@
       background: #1e2a3a;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 20px;
-      overflow: hidden;
+      overflow: visible;
       width: 100%; max-width: 400px;
       position: relative;
       color: white;
+      margin: auto 0;
     }
 
     .close-btn {
@@ -513,6 +515,10 @@
         console.error('[widget] config error:', err.message);
       }
 
+      // Bloquear scroll del body mientras el widget está abierto
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+
       render();
     },
 
@@ -522,6 +528,9 @@
         _state.host   = null;
         _state.shadow = null;
       }
+      // Restaurar scroll del body
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
       cleanupMercadoPago();
     },
   };
