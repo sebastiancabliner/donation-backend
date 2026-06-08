@@ -544,8 +544,31 @@
         _state.host   = null;
         _state.shadow = null;
       }
+      cleanupMercadoPago();
     },
   };
+
+  // El SDK de Mercado Pago (checkout autoOpen) inyecta su propio overlay/iframe
+  // y a veces bloquea el scroll del body. Al cerrar nuestro widget eso quedaba
+  // colgado y "nunca volvías al sitio". Esta limpieza barre esos restos.
+  function cleanupMercadoPago() {
+    try {
+      const selectors = [
+        'iframe[src*="mercadopago"]',
+        'iframe[src*="mercadolibre"]',
+        '[id^="mp-checkout"]',
+        '[class*="mercadopago"]',
+        '.mp-mercadopago-checkout',
+        '#dw-mp-overlay',
+      ];
+      document.querySelectorAll(selectors.join(',')).forEach((el) => el.remove());
+      // Restaurar scroll que MP suele bloquear
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    } catch (err) {
+      console.error('[widget] cleanup error:', err.message);
+    }
+  }
 
   global.DonationWidget = DonationWidget;
 })(window);
