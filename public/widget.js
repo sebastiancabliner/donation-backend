@@ -384,13 +384,14 @@
       hideError();
     });
 
-    $('#dw-mp-btn')?.addEventListener('click', () => handleMpPayment());
+    $('#dw-mp-btn')?.addEventListener('click', () => handleMpPayment(window.open('', '_blank')));
   }
 
   // ── MP payment ────────────────────────────────────────────────────────────────
-  async function handleMpPayment() {
+  async function handleMpPayment(mpWindow) {
     if (!_state.amount || _state.amount <= 0) {
       showError('Por favor elegí o ingresá un monto válido.');
+      if (mpWindow) mpWindow.close();
       return;
     }
 
@@ -410,12 +411,17 @@
 
       if (!init_point) throw new Error('No se recibió el link de pago');
 
-      // Abrir MP en nueva pestaña y cerrar el widget.
-      // No usamos autoOpen (inyecta overlay en el DOM del sitio y queda colgado al cerrar).
-      window.open(init_point, '_blank');
+      // Navegar la ventana ya abierta (sync en el click) a la URL de MP.
+      // window.open() después de un await es bloqueado por Safari iOS y Chrome Android.
+      if (mpWindow && !mpWindow.closed) {
+        mpWindow.location.href = init_point;
+      } else {
+        window.open(init_point, '_blank');
+      }
       DonationWidget.close();
 
     } catch (err) {
+      if (mpWindow && !mpWindow.closed) mpWindow.close();
       setLoading(mpBtn, false);
       showError('Hubo un error al conectar con Mercado Pago. Intentá de nuevo.');
       console.error('[widget/mp]', err);
